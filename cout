@@ -1,0 +1,188 @@
+/*Point.h*/
+#pragma once
+#include "Shape.h"
+#include <string>
+class Point {
+private:
+    double x;    //横坐标
+    double y;    //纵坐标
+public:
+    Point() = default;
+    Point(double x_, double y_) { x = x_; y = y_; }
+    void setCoordinates(double x_, double y_);
+    string getCoordinates() const;
+};
+/*Color.h*/
+#pragma once
+enum class Color {
+    R, G, B,
+};
+enum class inColor {
+    R, G, B,
+};
+
+/*Controller.h*/
+#pragma once
+class Controller {
+private:
+    bool environment{ false };
+    int dimensions{ 2 };
+public:
+    Controller() = default;
+    Controller(int d, bool e);
+    void setEnvironment(bool);
+    void setDimensions(int);
+    bool getEnvironment();
+    int getDimensions();
+    ~Controller() { environment = false; }
+};
+/*Rectangle.h*/
+#pragma once
+#include "Shape.h"
+#include "Point.h"
+#include "Controller.h"
+class Rectangle :public Shape, public Point, public Controller {
+private:
+    double width{ 1.0 };
+    double height{ 1.0 };
+public:
+    Rectangle() = default;
+    Rectangle(double x_, double y_, double w, double h, Color c, inColor incolor_, bool f, int dim, bool emt);
+    ~Rectangle();
+    double getWidth() const;
+    void setWidth(double w);
+    double getHeight() const;
+    void setHeight(double h);
+    string toString();
+};
+/*Triangle.h*/
+#pragma once
+#include "Shape.h"
+#include "Point.h"
+#include "Controller.h"
+class Triangle :public Shape, public Point, public Controller {
+private:
+    double side1;
+    double side2;
+    double side3;
+public:
+    Triangle() = default;
+    Triangle(double x_, double y_, double s1, double s2, double s3, Color c, inColor incolor_, bool f, int dim, bool emt);
+    string getSides() const;
+    void setSides(double s1, double s2, double s3);
+    string toString();
+};
+/*Circle.h*/
+#pragma once
+#include "Shape.h"
+#include "Point.h"
+#include "Controller.h"
+class Circle :public Shape, public Point, public Controller {
+private:
+    double radius;
+public:
+    Circle();
+    Circle(double x_, double y_, double radius_, Color color_, inColor incolor_, bool filled_, int dim, bool emt);
+    ~Circle();
+    double getRadius() const;
+    void setRadius(double radius);
+    string toString();
+};
+/*Shape.h*/
+#pragma once
+#include "Controller.h"
+#include <iostream>
+#include <string>
+#include <array>
+#include "Color.h"
+using std::string;
+using namespace std::string_literals;
+using std::to_string;
+class Shape {
+private:
+    Color color{ Color::R };
+    inColor incolor{ inColor::R };
+    bool filled{ false };
+    std::array<string, 3> colorNames{ "Red"s, "Green"s, "Blue"s, };
+    std::array<string, 3> inColorNames{ "Red"s, "Green"s, "Blue"s, };
+public:
+    Shape() = default;
+    Shape(Color color_, inColor incolor_, bool filled_);
+    Color getColor();
+    void setColor(Color color_);
+    bool isFilled();
+    void setFilled(bool filled_);
+    inColor getInColor();
+    void setInColor(inColor incolor_);
+    string toString();
+    string colorToString();
+    string inColorToString();
+    string filledToString();
+};
+/*FileName.cpp*/
+#include<iostream>
+#include "Shape.h"
+#include "Circle.h"
+#include "Rectangle.h"
+#include "Controller.h"
+#include "Triangle.h"
+#include "Point.h"
+#include "Circle.h"
+using std::cout;
+using std::endl;
+using std::cin;
+
+int main() {
+    int shape, sidecolor, incolor, dim;
+    double x_, y_, width, length, radius, s1, s2, s3;
+    bool f, emt;
+
+    cout << "Chose a shape: 0 for circle; 1 for rectangle ; 2 for triangle:";
+    cin >> shape;
+    if (shape != 0 && shape != 1 && shape != 2)
+    {
+        cout << "no such a kind of shape provided!";
+        return 0;
+    }
+
+    cout << "please input coordinates: " << endl;
+    cin >> x_ >> y_;
+
+    cout << "Sidecolor: 0 for R; 1 for G; 2 for B" << endl;
+    cin >> sidecolor;
+
+    cout << "filled color: 0 for R; 1 for G; 2 for B" << endl;
+    cin >> incolor;
+
+
+    cout << "Is the shape filled? 1 for true/0 for false: " << endl;
+    cin >> f;
+
+
+    cout << "dimensions: " << endl;
+    cin >> dim;
+
+
+    cout << "environment: 1 for true/0 for false: " << endl;
+    cin >> emt;
+    if (0 == shape) {
+        cout << "radius: " << endl;
+        cin >> radius;
+        Circle c{ x_,y_,radius,static_cast<Color>(sidecolor),static_cast<inColor>(incolor),f,dim,emt };
+        cout << c.toString() << endl;
+
+    }
+    else if (1 == shape) {
+        cout << "width & height" << endl;
+        cin >> width >> length;
+        Rectangle r{ x_,y_,width,length,static_cast<Color>(sidecolor),static_cast<inColor>(incolor),f,dim,emt };
+        cout << r.toString() << endl;
+    }
+    else if (2 == shape) {
+        cout << "side1 & side2 & side3: ";
+        cin >> s1 >> s2 >> s3;
+        Triangle t{ x_,y_,s1,s2,s3,static_cast<Color>(sidecolor),static_cast<inColor>(incolor),f,dim,emt };
+        cout << t.toString() << endl;
+    }
+    return 0;
+}
